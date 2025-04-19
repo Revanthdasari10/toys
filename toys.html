@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toy Store</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #fff5f0; }
+    header { background: #ff4c68; color: white; padding: 30px 20px; text-align: center; background-image: linear-gradient(to right, #ff4c68, #ff6f61); }
+    h1 { margin: 0; font-size: 2.5em; }
+    .filter-bar { display: flex; justify-content: center; gap: 10px; margin: 20px; flex-wrap: wrap; }
+    .filter-bar select, .filter-bar input { padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+    .toy-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+    .toy-card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; text-align: center; transition: transform 0.2s ease; }
+    .toy-card:hover { transform: translateY(-5px); }
+    .toy-card img { max-width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+    .toy-card h3 { margin: 10px 0 5px; }
+    .toy-card p { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Toy Galaxy!</h1>
+    <p>Find the perfect toy for every age and occasion</p>
+  </header>
+
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search toys...">
+    <select id="categoryFilter">
+      <option value="All">All Categories</option>
+      <option value="Educational">Educational</option>
+      <option value="Action">Action</option>
+      <option value="Soft">Soft Toys</option>
+    </select>
+    <select id="sizeFilter">
+      <option value="All">All Sizes</option>
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+    <select id="priceFilter">
+      <option value="All">All Prices</option>
+      <option value="Low">Below $20</option>
+      <option value="Mid">$20 - $50</option>
+      <option value="High">Above $50</option>
+    </select>
+  </div>
+
+  <div class="toy-container" id="toyContainer"></div>
+
+  <script>
+    const toys = [
+      { name: "Alphabet Blocks", size: "Small", price: 10, category: "Educational", image: "https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2" },
+      { name: "Superhero Figure", size: "Medium", price: 30, category: "Action", image: "https://images.unsplash.com/photo-1597930605646-9e15ce3a8e7d" },
+      { name: "Teddy Bear", size: "Large", price: 60, category: "Soft", image: "https://images.unsplash.com/photo-1607902199423-e23d678f4ddb" },
+      { name: "Toy Car", size: "Small", price: 15, category: "Action", image: "https://images.unsplash.com/photo-1618831236348-b681dd3241c6" },
+      { name: "Counting Beads", size: "Small", price: 18, category: "Educational", image: "https://images.unsplash.com/photo-1522413452206-8e4f6c8801b5" },
+      { name: "Stuffed Bunny", size: "Medium", price: 25, category: "Soft", image: "https://images.unsplash.com/photo-1611287034636-e9e00e1530e7" },
+    ];
+
+    const toyContainer = document.getElementById('toyContainer');
+    const sizeFilter = document.getElementById('sizeFilter');
+    const priceFilter = document.getElementById('priceFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const searchInput = document.getElementById('searchInput');
+
+    function displayToys() {
+      const size = sizeFilter.value;
+      const price = priceFilter.value;
+      const category = categoryFilter.value;
+      const search = searchInput.value.toLowerCase();
+
+      toyContainer.innerHTML = '';
+
+      const filteredToys = toys.filter(toy => {
+        const matchSize = size === 'All' || toy.size === size;
+        const matchCategory = category === 'All' || toy.category === category;
+        const matchSearch = toy.name.toLowerCase().includes(search);
+        const matchPrice =
+          price === 'All' ||
+          (price === 'Low' && toy.price < 20) ||
+          (price === 'Mid' && toy.price >= 20 && toy.price <= 50) ||
+          (price === 'High' && toy.price > 50);
+
+        return matchSize && matchPrice && matchSearch && matchCategory;
+      });
+
+      filteredToys.forEach(toy => {
+        const card = document.createElement('div');
+        card.className = 'toy-card';
+        card.innerHTML = `
+          <img src="${toy.image}" alt="${toy.name}" />
+          <h3>${toy.name}</h3>
+          <p>Category: ${toy.category}</p>
+          <p>Size: ${toy.size}</p>
+          <p>Price: $${toy.price}</p>
+        `;
+        toyContainer.appendChild(card);
+      });
+    }
+
+    sizeFilter.addEventListener('change', displayToys);
+    priceFilter.addEventListener('change', displayToys);
+    categoryFilter.addEventListener('change', displayToys);
+    searchInput.addEventListener('input', displayToys);
+
+    displayToys();
+  </script>
+</body>
+</html>
+
